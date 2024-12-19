@@ -22,7 +22,7 @@ env:
 
 git:
 	@printf "$(YELLOW)==== Set user name and email to git for ${name} repo... ====$(NO_COLOR)\n"
-	@bash gituser.sh
+	@bash scripts/gituser.sh
 
 help:
 	@echo -e "$(OK_COLOR)==== All commands of ${name} configuration ====$(NO_COLOR)"
@@ -33,6 +33,7 @@ help:
 	@echo -e "$(WARN_COLOR)- make fclean				: Remove virtual environment"
 
 push:
+	@printf "$(YELLOW)==== Push changes to the ${name} repo... ====$(NO_COLOR)\n"
 	@bash scripts/push.sh
 
 clean:
