@@ -2,8 +2,6 @@
 
 dc1="$(grep "DC_NAME" .env | sed -r 's/.{,8}//')"
 dc2="$(grep "DC_HOST" .env | sed -r 's/.{,8}//')"
-echo $dc1
-echo $dc2
 
 # Сканируем все директории, исключая "scripts", скрытые директории и текущую директорию "."
 mapfile -t directories < <(find . -mindepth 1 -maxdepth 1 -type d ! -path "./scripts" ! -path "*/.*" ! -path ".")
@@ -27,8 +25,8 @@ read -r choice
 
 # Проверка корректности выбора
 if [[ $choice =~ ^[0-9]+$ ]] && [ $choice -ge 0 ] && [ $choice -lt ${#directories[@]} ]; then
-  selected_directory="${directories[$choice]}"
-  echo "Вы выбрали группу: $(basename "$selected_directory")"
+  dir="${directories[$choice]}"
+  echo "Вы выбрали группу: $(basename "$dir")"
 else
   echo "Некорректный выбор!"
   exit 1
@@ -52,4 +50,21 @@ ncikname="${first_letter}${second_var_lower}"
 # Вывести результат
 echo "Результат: $ncikname"
 
-echo "$ncikname" >> $selected_directory/$ncikname
+dirtext="${dir:2}"
+
+echo "dn: uid=$ncikname,ou=$dirtext,dc=$dc1,dc=$dc2" > $dir/$ncikname
+echo "objectClass: inetOrgPerson" >> $dir/$ncikname
+echo "objectClass: posixAccount" >> $dir/$ncikname
+echo "objectClass: top" >> $dir/$ncikname
+echo "cn: $name $surname" >> $dir/$ncikname
+echo "uid: $ncikname" >> $dir/$ncikname
+echo "objectClass: posixAccount" >> $dir/$ncikname
+
+
+# Создать пользователя в системе
+# Проверить uid созданного пользователя
+# Записать uid в файл
+# Сгенерировать рандомный пароль
+# Получить хэш пароля
+# Записать хэш в файл
+# Вывести пароль в терминал
