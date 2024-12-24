@@ -61,28 +61,32 @@ echo "uid: $ncikname" >> $dir/$ncikname
 echo "objectClass: posixAccount" >> $dir/$ncikname
 
 
+# Генерация случайного пароля (16 символов)
+password=$(openssl rand -base64 16)
 
-# Генерируем пароль
-read -sp "Введите пароль: " password
-echo
-
-# Генерируем 16-байтную соль
+# Генерация случайной 16-байтной соли
 salt=$(openssl rand -hex 16)
 
 # Конкатенируем пароль и соль
 password_and_salt="${password}${salt}"
 
-# Хэшируем с помощью SHA1
+# Хэшируем с использованием SHA1
 hash=$(echo -n "$password_and_salt" | openssl dgst -binary -sha1)
 
-# Добавляем соль в конец хэша
+# Генерация SSHA-хэша (хэш + соль в base64)
 ssha_hash=$(echo -n "${hash}${salt}" | base64)
 
-# Выводим хэш SSHA
-echo "{SSHA}${ssha_hash}"
+# Сохранение пароля в файл
+echo "$password" > admin_password.txt
+
+# Создание хэша SSHA для LDAP
+ssha_password="{SSHA}${ssha_hash}"
+
+# Выводим результат
+echo "SSHA хэш для LDAP: $ssha_password"
 
 # + Создать пользователя в системе
-# Генерировать рандомный пароль вместо ввода?
+# + Генерировать рандомный пароль вместо ввода
 # Проверить uid созданного пользователя
 # Записать uid в файл
 # Сгенерировать рандомный пароль
