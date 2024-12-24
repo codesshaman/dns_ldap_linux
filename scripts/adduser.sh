@@ -61,7 +61,27 @@ echo "uid: $ncikname" >> $dir/$ncikname
 echo "objectClass: posixAccount" >> $dir/$ncikname
 
 
-# Создать пользователя в системе
+
+# Генерируем пароль
+read -sp "Введите пароль: " password
+echo
+
+# Генерируем 16-байтную соль
+salt=$(openssl rand -hex 16)
+
+# Конкатенируем пароль и соль
+password_and_salt="${password}${salt}"
+
+# Хэшируем с помощью SHA1
+hash=$(echo -n "$password_and_salt" | openssl dgst -binary -sha1)
+
+# Добавляем соль в конец хэша
+ssha_hash=$(echo -n "${hash}${salt}" | base64)
+
+# Выводим хэш SSHA
+echo "{SSHA}${ssha_hash}"
+
+# + Создать пользователя в системе
 # Проверить uid созданного пользователя
 # Записать uid в файл
 # Сгенерировать рандомный пароль
