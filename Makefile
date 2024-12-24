@@ -6,7 +6,7 @@ OK_COLOR=\033[32;01m	# Green Ok
 ERROR_COLOR=\033[31;01m	# Error red
 WARN_COLOR=\033[33;01m	# Warning yellow
 
-
+#
 # git clone github-repo:codesshaman/dns_ldap_linux.git
 
 addgrp:
